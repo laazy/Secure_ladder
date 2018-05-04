@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <script src="https://apps.bdimg.com/libs/jquery/2.1.4/jquery.min.js"></script>
+    <title>WordLadder</title>
+</head>
+<body>
+    <h2> 登录 </h2>
+    <label>用户名</label>
+    <input type="text" name="username" id="username">
+    <br/>
+    <label>密码</label>
+    <input type="text" name="password" id="password">
+    <br/>
+    <button id="submit">登录</button>
+
+    <h2>Word Ladder</h2>
+    <label>开始词</label>
+    <input type="text" name="begin" id="begin">
+    <br/>
+    <label>结束词</label>
+    <input type="text" name="end" id="end">
+    <br/>
+    <button id="getLadder">提交</button>
+    <p id="ladder"></p>
+
+<script>
+    var my_token = ""
+    $("#submit").click(function () {
+        var username = $("#username").val();
+        var password = $("#password").val();
+        console.log(username, password);
+        $.ajax({
+            url:"/oauth/token",
+            data: {
+                "grant_type": "client_credentials",
+                "scope": "select",
+                "client_id": username,
+                "client_secret": password
+            },
+            type: "post",
+            dataType: "json",
+            async:false,
+            success: function (result) {
+                console.log(result)
+                if (!result.access_token){
+                    alert("用户名或密码错误");
+                    return;
+                }
+                my_toker = result.access_token;
+            },
+            error: function (msg) {
+                alert("用户名或密码错误");
+                console.log(msg);
+            }
+        })
+
+    });
+
+    $("#getLadder").click(function () {
+        var begin = $("#begin").val();
+        var end = $("#end").val();
+
+        $.ajax({
+            url: "/ladder",
+            data:{
+                "begin":begin,
+                "end":end
+            },
+            type:"get",
+            async:false,
+            success: function (result) {
+                console.log(result);
+                $("#ladder").innerText=result.toString();
+            },
+            error:function (msg) {
+                alert("请登录后使用");
+                console.log(msg);
+            }
+        })
+    })
+</script>
+
+</body>
+</html>
