@@ -23,7 +23,7 @@
     <input type="text" name="end" id="end">
     <br/>
     <button id="getLadder">提交</button>
-    <p id="ladder"></p>
+    <p id="ladder">null</p>
 
 <script>
     var my_token = ""
@@ -48,7 +48,7 @@
                     alert("用户名或密码错误");
                     return;
                 }
-                my_toker = result.access_token;
+                my_token = result.access_token;
             },
             error: function (msg) {
                 alert("用户名或密码错误");
@@ -66,13 +66,14 @@
             url: "/ladder",
             data:{
                 "begin":begin,
-                "end":end
+                "end":end,
+                "access_token":my_token
             },
             type:"get",
             async:false,
             success: function (result) {
-                console.log(result);
-                $("#ladder").innerText=result.toString();
+                console.log(result.toString());
+                $("#ladder").text(result.toString());
             },
             error:function (msg) {
                 alert("请登录后使用");
